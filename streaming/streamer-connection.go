@@ -28,12 +28,6 @@ func InitStreamer(domain string, stage string) {
 	streamerConn.apigwManagementApi = apiGateway
 }
 
-// func (sc *StreamerConnection) PostData(data []byte, connectionId *string) {
-
-// 	param := apigatewaymanagementapi.PostToConnectionInput{ConnectionId: connectionId, Data: data}
-
-// }
-
 func handleRequest(ctx context.Context, req *events.APIGatewayWebsocketProxyRequest) (events.APIGatewayProxyResponse, error) {
 
 	log.Printf("Handling API Gateway Websocket Proxy Request: %+v", req)
