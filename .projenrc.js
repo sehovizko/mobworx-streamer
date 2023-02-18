@@ -1,5 +1,4 @@
 const { awscdk, TextFile } = require("projen");
-const { DependabotRegistryType } = require("projen/lib/github");
 
 const project = new awscdk.AwsCdkTypeScriptApp({
   name: "mobworx-streamer",
@@ -7,7 +6,6 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   keywords: ["hls", "streaming", "golang"],
 
   prettier: true,
-  codeCov: true,
   release: true,
   defaultReleaseBranch: "main",
   workflowNodeVersion: "18",
