@@ -8,7 +8,6 @@ signalAction:
   ping: "ping"
   abort: "abort"
   terminate: "terminate"
-
 	ackVariant: 'ackVariant'
 	ackRendition: 'ackRendition'
 	ackSegment: 'ackSegment'
