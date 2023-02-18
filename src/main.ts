@@ -1,11 +1,15 @@
 import { App, Stack, StackProps } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { EndpointNestedStack } from "./endpoint/endpoint.nested-stack";
+import { VpcNestedStack } from "./vpc.nested-stack";
 
 export class StreamerStack extends Stack {
   constructor(scope: Construct, id: string, props: StackProps = {}) {
     super(scope, id, props);
-    new EndpointNestedStack(this, "EndpointNestedStack");
+    const vpcNestedStack = new VpcNestedStack(this, "VPC");
+    new EndpointNestedStack(this, "EndpointNestedStack", {
+      vpc: vpcNestedStack.vpc,
+    });
   }
 }
 
