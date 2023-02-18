@@ -1,13 +1,11 @@
-package streaming
+package helpers
 
 import (
 	"context"
+	"github.com/aws/aws-lambda-go/events"
 	"log"
 	"net/http"
 	"net/url"
-
-	"github.com/attilathefun/utils/awsutils"
-	"github.com/aws/aws-lambda-go/events"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -42,15 +40,14 @@ func handleRequest(ctx context.Context, req *events.APIGatewayWebsocketProxyRequ
 	}
 
 	log.Println("Creating API Gateway client for callback URL: ", callbackURL.String())
-	apiClient := apigatewaymanagementapi.NewFromConfig(awsutils.AWSConfig, func(o *apigatewaymanagementapi.Options) {
-		o.EndpointResolver = apigatewaymanagementapi.EndpointResolverFromURL(callbackURL.String())
-	})
+	mySession := session.Must(session.NewSession())
+	apiClient := apigatewaymanagementapi.New(mySession, aws.NewConfig().WithRegion("us-west-2"))
 
 	log.Printf("Created API Gateway Client: %+v", apiClient)
 	log.Println()
 
 	// Post a message to the connection:
-	_, err := apiClient.PostToConnection(context.Background(), &apigatewaymanagementapi.PostToConnectionInput{
+	_, err := apiClient.PostToConnection(&apigatewaymanagementapi.PostToConnectionInput{
 		ConnectionId: aws.String(connectionID),
 		Data:         []byte("Test Post to Connection"),
 	})
