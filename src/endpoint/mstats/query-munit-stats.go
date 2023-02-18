@@ -5,10 +5,7 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/secretsmanager"
 	"github.com/go-redis/redis"
-	"log"
 	"os"
 )
 
@@ -21,12 +18,9 @@ const (
 	MunitStatsIDXEnd   = 1
 )
 
-var (
-	redisClient *redis.Client
-	sess        *session.Session
-)
+var redisClient *redis.Client
 
-func HandleQueryMunitStats(_ aws.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func HandleQueryMunitStats(_ aws.Context, _ events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	mStats, err := redisClient.ZRange("munitstatsidx", MunitStatsIDXStart, MunitStatsIDXEnd).Result()
 	if err != nil {
 		return events.APIGatewayProxyResponse{StatusCode: 500}, nil
@@ -51,17 +45,8 @@ func HandleQueryMunitStats(_ aws.Context, event events.APIGatewayProxyRequest) (
 }
 
 func main() {
-	sess = session.Must(session.NewSession())
-	sm := secretsmanager.New(sess)
-	redisCredentials, err := sm.GetSecretValue(&secretsmanager.GetSecretValueInput{
-		SecretId: aws.String(os.Getenv("REDIS_CREDENTIALS")),
+	redisClient = redis.NewClient(&redis.Options{
+		Addr: os.Getenv("REDIS_ADDRESS"),
 	})
-	if err != nil {
-		panic(err)
-	}
-
-	log.Println(redisCredentials.String())
-
-	redisClient = redis.NewClient(&redis.Options{})
 	lambda.Start(HandleQueryMunitStats)
 }
