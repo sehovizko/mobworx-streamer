@@ -1,11 +1,11 @@
 import { App, Stack, StackProps } from "aws-cdk-lib";
 import { Construct } from "constructs";
+import { EndpointNestedStack } from "./endpoint/endpoint.nested-stack";
 
-export class MyStack extends Stack {
+export class StreamerStack extends Stack {
   constructor(scope: Construct, id: string, props: StackProps = {}) {
     super(scope, id, props);
-
-    // define resources here...
+    new EndpointNestedStack(this, "EndpointNestedStack");
   }
 }
 
@@ -17,7 +17,7 @@ const devEnv = {
 
 const app = new App();
 
-new MyStack(app, "mobworx-streamer-dev", { env: devEnv });
+new StreamerStack(app, "mobworx-streamer-dev", { env: devEnv });
 // new MyStack(app, 'mobworx-streamer-prod', { env: prodEnv });
 
 app.synth();

@@ -4,6 +4,11 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   name: "mobworx-streamer",
   repository: "https://github.com/sehovizko/mobwrox-streamer.git",
   keywords: ["hls", "streaming", "golang"],
+  deps: [
+    "@aws-cdk/aws-lambda-go-alpha",
+    "@aws-cdk/aws-apigatewayv2-alpha",
+    "@aws-cdk/aws-apigatewayv2-integrations-alpha",
+  ],
 
   prettier: true,
   release: true,
