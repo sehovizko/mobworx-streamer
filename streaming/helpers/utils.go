@@ -66,13 +66,13 @@ type Mapping struct {
 	Data []byte
 }
 type Response struct {
-	action    string
-	version   int
-	id        string
-	timestamp string
-	size      int
-	latency   int
-	payload   *Payload
+	Action    string
+	Version   int
+	Id        string
+	Timestamp string
+	Size      int
+	Latency   int
+	Payload   *Payload
 }
 
 func (u *Utils) GetAckSignal(event *events.APIGatewayProxyRequest, uploadLatency int) *Response {
@@ -156,15 +156,15 @@ func (u *Utils) GetAckSignal(event *events.APIGatewayProxyRequest, uploadLatency
 		panic(err)
 	}
 	size := len(jsonPayload)
-	//latency := uploadLatency || ((new Date).getTime() - Number(msg.timestamp));
+	//Latency := uploadLatency || ((new Date).getTime() - Number(msg.Timestamp));
 	return &Response{
-		action:    ackAction,
-		version:   1,
-		id:        uuid.New().String(),
-		timestamp: strconv.FormatInt(time.Now().Unix(), 10),
-		size:      size,
-		latency:   uploadLatency, //TODO: Should be latency variable.
-		payload:   payload,
+		Action:    ackAction,
+		Version:   1,
+		Id:        uuid.New().String(),
+		Timestamp: strconv.FormatInt(time.Now().Unix(), 10),
+		Size:      size,
+		Latency:   uploadLatency, //TODO: Should be Latency variable.
+		Payload:   payload,
 	}
 }
 
