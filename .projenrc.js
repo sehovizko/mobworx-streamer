@@ -19,7 +19,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   renovatebot: true,
   autoApproveUpgrades: true,
   autoApproveOptions: {
-    allowedUsernames: ["renovatebot[bot]"],
+    allowedUsernames: ["renovate[bot]"],
   },
   license: false,
 
