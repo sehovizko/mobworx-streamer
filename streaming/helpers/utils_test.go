@@ -121,3 +121,17 @@ func TestAck(t *testing.T) {
 	//Todo: Should write assertions to here.
 
 }
+func TestDumpToS3(t *testing.T) {
+
+	mySession := session.Must(session.NewSession())
+	sc := NewStreamerConnection(mySession, "domain", "stage")
+	utils := NewUtils(sc)
+	utils.S3UserBucked = "S3_USER_BUCKET"
+	response, err := utils.DumpToS3("key", []byte("data"))
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(response)
+	//Todo: Should write assertions to here.
+
+}
