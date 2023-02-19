@@ -33,7 +33,7 @@ func GetMimeType(renditionType RenditionType) string {
 	return string(Application)
 }
 
-func HandleUpdateRendition(_ aws.Context, event events.APIGatewayWebsocketProxyRequest) error {
+func HandleUpdateRendition(_ aws.Context, event events.APIGatewayProxyRequest) error {
 	return nil
 }
 
