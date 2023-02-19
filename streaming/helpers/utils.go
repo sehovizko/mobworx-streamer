@@ -201,6 +201,7 @@ func (u *Utils) DumpToS3(key string, data []byte) (*s3.PutObjectOutput, error) {
 		ACL:    aws.String("public-read"),
 		Body:   aws.ReadSeekCloser(strings.NewReader(string(data))),
 		Bucket: aws.String(u.S3UserBucked),
+		Key:    aws.String(key),
 	}
 	return svc.PutObject(putObject)
 }
