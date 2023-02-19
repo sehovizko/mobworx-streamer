@@ -1,12 +1,13 @@
 package main
 
 import (
-	"hls.streaming.com/streaming"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"hls.streaming.com/streaming/helpers"
+	"log"
 )
 
 func main() {
-	streaming.InitConfig()
-
-	conf := streaming.LoadedConfig()
-
+	mySession := session.Must(session.NewSession())
+	sc := helpers.NewStreamerConnection(mySession)
+	log.Println(sc)
 }

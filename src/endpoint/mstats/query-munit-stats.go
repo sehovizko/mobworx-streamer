@@ -5,7 +5,7 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
-	"github.com/go-redis/redis"
+	"github.com/go-redis/redis/v8"
 	"os"
 )
 
@@ -20,8 +20,8 @@ const (
 
 var redisClient *redis.Client
 
-func HandleQueryMunitStats(_ aws.Context, _ events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	mStats, err := redisClient.ZRange("munitstatsidx", MunitStatsIDXStart, MunitStatsIDXEnd).Result()
+func HandleQueryMunitStats(ctx aws.Context, _ events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	mStats, err := redisClient.ZRange(ctx, "munitstatsidx", MunitStatsIDXStart, MunitStatsIDXEnd).Result()
 	if err != nil {
 		return events.APIGatewayProxyResponse{StatusCode: 500}, nil
 	}
