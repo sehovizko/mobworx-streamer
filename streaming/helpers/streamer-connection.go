@@ -8,27 +8,21 @@ import (
 
 type StreamerConnection struct {
 	ApiGwManagementApi *apigatewaymanagementapi.ApiGatewayManagementApi
+	Session            *session.Session
 }
 
-var mySession *session.Session
-
-func InitSession() {
-	mySession = session.Must(session.NewSession())
-}
-func GetStreamerConnection(domain string, stage string) *StreamerConnection {
-	if mySession == nil {
-		panic("Session must be initialized first.")
-	}
-	apiGateway := apigatewaymanagementapi.New(mySession, aws.NewConfig().WithRegion("us-west-2"))
+func NewStreamerConnection(session *session.Session) *StreamerConnection {
+	apiGateway := apigatewaymanagementapi.New(session, aws.NewConfig().WithRegion("us-west-2"))
 	return &StreamerConnection{
 		ApiGwManagementApi: apiGateway,
+		Session:            session,
 	}
 }
 
-func (sc *StreamerConnection) PostData(data *[]byte, connectionId string) (*apigatewaymanagementapi.PostToConnectionOutput, error) {
+func (sc *StreamerConnection) PostData(data []byte, connectionId string) (*apigatewaymanagementapi.PostToConnectionOutput, error) {
 	postToConnectionInput := &apigatewaymanagementapi.PostToConnectionInput{
 		ConnectionId: &connectionId,
-		Data:         *data,
+		Data:         data,
 	}
 	return sc.ApiGwManagementApi.PostToConnection(postToConnectionInput)
 }

@@ -1,66 +1,24 @@
 package helpers
 
-import (
-	"fmt"
-	"strings"
+type SignalAction string
 
-	"github.com/spf13/viper"
+const (
+	UpdateVariant      SignalAction = "updateVariant"
+	UpdateRendition    SignalAction = "updateRendition"
+	UpdateSegment      SignalAction = "updateSegment"
+	UpdatePart         SignalAction = "updatePart"
+	UpdateDemuxSegment SignalAction = "updateDemuxSegment"
+	UpdateDemuxPart    SignalAction = "updateDemuxPart"
+	Ping               SignalAction = "ping"
+	Abort              SignalAction = "abort"
+	Terminate          SignalAction = "terminate"
+	AckVariant         SignalAction = "ackVariant"
+	AckRendition       SignalAction = "ackRendition"
+	AckSegment         SignalAction = "ackSegment"
+	AckPart            SignalAction = "ackPart"
+	AckDemuxSegment    SignalAction = "ackDemuxSegment"
+	AckDemuxPart       SignalAction = "ackDemuxPart"
+	Pong               SignalAction = "pong"
+	Aborted            SignalAction = "aborted"
+	Terminated         SignalAction = "terminated"
 )
-
-// Config is an application config
-// Should be used only in main packages for config parsing and dependency initialization.
-type Config struct {
-	SignalAction SignalActionConfig
-}
-
-type SignalActionConfig struct {
-	UpdateVariant      string
-	UpdateRendition    string
-	UpdateSegment      string
-	UpdatePart         string
-	UpdateDemuxSegment string
-	UpdateDemuxPart    string
-	Ping               string
-	Abort              string
-	Terminate          string
-	AckVariant         string
-	AckRendition       string
-	AckSegment         string
-	AckPart            string
-	AckDemuxSegment    string
-	AckDemuxPart       string
-	Pong               string
-	Aborted            string
-	Terminated         string
-}
-
-var (
-	conf *Config
-)
-
-func initConf() *Config {
-	var configPath string = ""
-	configPath = "config.yml"
-	viper.SetConfigFile(configPath)
-	viper.SetEnvPrefix("app")
-	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))
-	viper.AutomaticEnv()
-	err := viper.ReadInConfig()
-	if err != nil {
-		fmt.Println(fmt.Errorf("read config file, %w", err))
-	}
-	conf := &Config{}
-	err = viper.Unmarshal(conf)
-	if err != nil {
-		fmt.Println(fmt.Errorf("decode config, %w", err))
-	}
-	return conf
-}
-
-func GetSignalAction() *Config {
-	return conf
-}
-
-func InitConfig() {
-	conf = initConf()
-}
