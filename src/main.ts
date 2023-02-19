@@ -1,14 +1,24 @@
+import { HttpApi } from "@aws-cdk/aws-apigatewayv2-alpha";
 import { App, Stack, StackProps } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { EndpointNestedStack } from "./endpoint/endpoint.nested-stack";
+import { StreamingNestedStack } from "./streaming/streaming.nested-stack";
 import { VpcNestedStack } from "./vpc.nested-stack";
 
 export class StreamerStack extends Stack {
+  api = new HttpApi(this, "Api");
+
   constructor(scope: Construct, id: string, props: StackProps = {}) {
     super(scope, id, props);
-    const vpcNestedStack = new VpcNestedStack(this, "VPC");
+    const { vpc } = new VpcNestedStack(this, "VPC");
+
     new EndpointNestedStack(this, "EndpointNestedStack", {
-      vpc: vpcNestedStack.vpc,
+      vpc,
+      api: this.api,
+    });
+    new StreamingNestedStack(this, "StreamingNestedStack", {
+      vpc,
+      api: this.api,
     });
   }
 }

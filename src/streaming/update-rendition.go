@@ -1,4 +1,10 @@
-package streaming
+package main
+
+import (
+	"github.com/aws/aws-lambda-go/events"
+	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/aws-sdk-go/aws"
+)
 
 type RenditionType string
 
@@ -25,4 +31,12 @@ func GetMimeType(renditionType RenditionType) string {
 		return string(value)
 	}
 	return string(Application)
+}
+
+func HandleUpdateRendition(_ aws.Context, event events.APIGatewayProxyRequest) error {
+	return nil
+}
+
+func main() {
+	lambda.Start(HandleUpdateRendition)
 }
