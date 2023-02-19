@@ -12,16 +12,18 @@ import (
 )
 
 type Utils struct {
-	signalAction       *SignalAction
+	signalAction       *Config
 	streamerConnection *StreamerConnection
 	s3UserBucked       string
+	session            *session.Session
 }
 
-func GetUtils(streamerConnection *StreamerConnection) *Utils {
+func GetUtils(streamerConnection *StreamerConnection, session *session.Session) *Utils {
 	return &Utils{
 		signalAction:       GetSignalAction(),
 		streamerConnection: streamerConnection,
 		s3UserBucked:       os.Getenv("S3_USER_BUCKET"),
+		session:            session,
 	}
 
 }
@@ -60,8 +62,7 @@ func (u *Utils) GetAckSignal(event events.ALBTargetGroupRequest, uploadLatency s
 
 }
 func (u *Utils) DumpToS3(key string, data []byte) (*s3.PutObjectOutput, error) {
-	mySession := session.Must(session.NewSession())
-	svc := s3.New(mySession, aws.NewConfig().WithRegion("us-west-2"))
+	svc := s3.New(u.session, aws.NewConfig().WithRegion("us-west-2"))
 	putObject := &s3.PutObjectInput{
 		ACL:    aws.String("public-read"),
 		Body:   aws.ReadSeekCloser(strings.NewReader(string(data))),

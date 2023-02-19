@@ -40,7 +40,7 @@ var (
 
 func initConf() *Config {
 	var configPath string = ""
-	configPath = "../config.yml"
+	configPath = "config.yml"
 	viper.SetConfigFile(configPath)
 	viper.SetEnvPrefix("app")
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))

@@ -10,10 +10,16 @@ type StreamerConnection struct {
 	ApiGwManagementApi *apigatewaymanagementapi.ApiGatewayManagementApi
 }
 
-func GetStreamerConnection(domain string, stage string) *StreamerConnection {
-	mySession := session.Must(session.NewSession())
-	apiGateway := apigatewaymanagementapi.New(mySession, aws.NewConfig().WithRegion("us-west-2"))
+var mySession *session.Session
 
+func InitSession() {
+	mySession = session.Must(session.NewSession())
+}
+func GetStreamerConnection(domain string, stage string) *StreamerConnection {
+	if mySession == nil {
+		panic("Session must be initialized first.")
+	}
+	apiGateway := apigatewaymanagementapi.New(mySession, aws.NewConfig().WithRegion("us-west-2"))
 	return &StreamerConnection{
 		ApiGwManagementApi: apiGateway,
 	}

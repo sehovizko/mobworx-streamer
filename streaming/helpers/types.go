@@ -1,6 +1,19 @@
 package helpers
 
-type SignalAction struct {
+import (
+	"fmt"
+	"strings"
+
+	"github.com/spf13/viper"
+)
+
+// Config is an application config
+// Should be used only in main packages for config parsing and dependency initialization.
+type Config struct {
+	SignalAction SignalActionConfig
+}
+
+type SignalActionConfig struct {
 	UpdateVariant      string
 	UpdateRendition    string
 	UpdateSegment      string
@@ -21,25 +34,33 @@ type SignalAction struct {
 	Terminated         string
 }
 
-func GetSignalAction() *SignalAction {
-	return &SignalAction{
-		UpdateVariant:      "updateVariant",
-		UpdateRendition:    "updateRendition",
-		UpdateSegment:      "updateSegment",
-		UpdatePart:         "updatePart",
-		UpdateDemuxSegment: "updateDemuxSegment",
-		UpdateDemuxPart:    "updateDemuxPart",
-		Ping:               "ping",
-		Abort:              "abort",
-		Terminate:          "terminate",
-		AckVariant:         "ackVariant",
-		AckRendition:       "ackRendition",
-		AckSegment:         "ackSegment",
-		AckPart:            "ackPart",
-		AckDemuxSegment:    "ackDemuxSegment",
-		AckDemuxPart:       "ackDemuxPart",
-		Pong:               "pong",
-		Aborted:            "aborted",
-		Terminated:         "terminated",
+var (
+	conf *Config
+)
+
+func initConf() *Config {
+	var configPath string = ""
+	configPath = "config.yml"
+	viper.SetConfigFile(configPath)
+	viper.SetEnvPrefix("app")
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))
+	viper.AutomaticEnv()
+	err := viper.ReadInConfig()
+	if err != nil {
+		fmt.Println(fmt.Errorf("read config file, %w", err))
 	}
+	conf := &Config{}
+	err = viper.Unmarshal(conf)
+	if err != nil {
+		fmt.Println(fmt.Errorf("decode config, %w", err))
+	}
+	return conf
+}
+
+func GetSignalAction() *Config {
+	return conf
+}
+
+func InitConfig() {
+	conf = initConf()
 }

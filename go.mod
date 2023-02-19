@@ -21,10 +21,16 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.14.2 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.18.3 // indirect
 	github.com/aws/smithy-go v1.13.5 // indirect
+	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
+	golang.org/x/net v0.4.0 // indirect
+	google.golang.org/protobuf v1.28.1 // indirect
 )
 
-require github.com/spf13/viper v1.15.0
+require (
+	github.com/spf13/viper v1.15.0
+	google.golang.org/appengine v1.6.7
+)
 
 require (
 	github.com/aws/aws-lambda-go v1.37.0
