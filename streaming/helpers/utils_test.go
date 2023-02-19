@@ -6,6 +6,7 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"strconv"
 	"testing"
 	"time"
@@ -71,6 +72,7 @@ func TestGetAckSignal(t *testing.T) {
 		})
 	}
 }
+
 func TestAck(t *testing.T) {
 	part := &Part{Data: []byte("part data")}
 	videoPart := &VideoPart{Data: nil}
@@ -117,21 +119,18 @@ func TestAck(t *testing.T) {
 		},
 	}
 
-	utils.Ack(request, 10)
+	err := utils.Ack(request, 10)
+	require.NoError(t, err)
 	//Todo: Should write assertions to here.
-
 }
-func TestDumpToS3(t *testing.T) {
 
+func TestDumpToS3(t *testing.T) {
 	mySession := session.Must(session.NewSession())
 	sc := NewStreamerConnection(mySession, "domain", "stage")
 	utils := NewUtils(sc)
 	utils.S3UserBucked = "S3_USER_BUCKET"
 	response, err := utils.DumpToS3("key", []byte("data"))
-	if err != nil {
-		panic(err)
-	}
+	require.NoError(t, err)
 	fmt.Println(response)
 	//Todo: Should write assertions to here.
-
 }
