@@ -8,7 +8,7 @@ require (
 	github.com/aws/aws-sdk-go v1.44.204
 	github.com/aws/constructs-go/constructs/v10 v10.1.255
 	github.com/aws/jsii-runtime-go v1.75.0
-	github.com/go-redis/redis/v8 v8.11.5
+	github.com/go-redis/redis/v9 v9.0.2
 	github.com/google/uuid v1.3.0
 	github.com/stretchr/testify v1.8.1
 )
