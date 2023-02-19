@@ -1,11 +1,11 @@
-import { NestedStack } from "aws-cdk-lib";
-import { Construct } from "constructs";
-import { NestedStackProps } from "aws-cdk-lib/core/lib/nested-stack";
-import { Vpc } from "aws-cdk-lib/aws-ec2";
-import { GoFunction } from "@aws-cdk/aws-lambda-go-alpha";
 import { join } from "path";
 import { HttpApi, HttpMethod } from "@aws-cdk/aws-apigatewayv2-alpha";
 import { HttpLambdaIntegration } from "@aws-cdk/aws-apigatewayv2-integrations-alpha";
+import { GoFunction } from "@aws-cdk/aws-lambda-go-alpha";
+import { NestedStack } from "aws-cdk-lib";
+import { Vpc } from "aws-cdk-lib/aws-ec2";
+import { NestedStackProps } from "aws-cdk-lib/core/lib/nested-stack";
+import { Construct } from "constructs";
 
 export interface StreamingNestedStackProps extends NestedStackProps {
   vpc: Vpc;

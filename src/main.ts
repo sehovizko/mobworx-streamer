@@ -1,9 +1,9 @@
+import { HttpApi } from "@aws-cdk/aws-apigatewayv2-alpha";
 import { App, Stack, StackProps } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { EndpointNestedStack } from "./endpoint/endpoint.nested-stack";
-import { VpcNestedStack } from "./vpc.nested-stack";
 import { StreamingNestedStack } from "./streaming/streaming.nested-stack";
-import { HttpApi } from "@aws-cdk/aws-apigatewayv2-alpha";
+import { VpcNestedStack } from "./vpc.nested-stack";
 
 export class StreamerStack extends Stack {
   api = new HttpApi(this, "Api");
