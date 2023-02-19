@@ -10,6 +10,7 @@ import { Construct } from "constructs";
 
 export interface EndpointNestedStackProps extends NestedStackProps {
   vpc: Vpc;
+  api: HttpApi;
 }
 
 export class EndpointNestedStack extends NestedStack {
@@ -47,10 +48,8 @@ export class EndpointNestedStack extends NestedStack {
 
   queryRoomParticipantsLambda = new GoFunction(this, "roomLambda", {
     entry: join(__dirname, "room", "query-participants.go"),
-    vpc: this.props?.vpc,
+    vpc: this.props.vpc,
   });
-
-  api = new HttpApi(this, "EndpointApi");
 
   constructor(
     scope: Construct,
@@ -94,6 +93,6 @@ export class EndpointNestedStack extends NestedStack {
           this.queryRoomParticipantsLambda
         ),
       },
-    ].forEach((route: AddRoutesOptions) => this.api.addRoutes(route));
+    ].forEach((route: AddRoutesOptions) => this.props.api.addRoutes(route));
   }
 }

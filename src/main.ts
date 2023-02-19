@@ -3,13 +3,23 @@ import { Construct } from "constructs";
 import { EndpointNestedStack } from "./endpoint/endpoint.nested-stack";
 import { VpcNestedStack } from "./vpc.nested-stack";
 import { StreamingNestedStack } from "./streaming/streaming.nested-stack";
+import { HttpApi } from "@aws-cdk/aws-apigatewayv2-alpha";
 
 export class StreamerStack extends Stack {
+  api = new HttpApi(this, "Api");
+
   constructor(scope: Construct, id: string, props: StackProps = {}) {
     super(scope, id, props);
     const { vpc } = new VpcNestedStack(this, "VPC");
-    new EndpointNestedStack(this, "EndpointNestedStack", { vpc });
-    new StreamingNestedStack(this, "StreamingNestedStack", { vpc });
+
+    new EndpointNestedStack(this, "EndpointNestedStack", {
+      vpc,
+      api: this.api,
+    });
+    new StreamingNestedStack(this, "StreamingNestedStack", {
+      vpc,
+      api: this.api,
+    });
   }
 }
 
