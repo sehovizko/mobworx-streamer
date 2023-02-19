@@ -34,6 +34,6 @@ export class StreamingNestedStack extends NestedStack {
           this.updateRenditionLambda
         ),
       },
-    ].forEach(this.props.api.addRoutes);
+    ].forEach((route) => this.props.api.addRoutes(route));
   }
 }
