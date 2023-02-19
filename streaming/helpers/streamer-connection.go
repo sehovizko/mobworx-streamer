@@ -11,8 +11,8 @@ type StreamerConnection struct {
 	Session            *session.Session
 }
 
-func NewStreamerConnection(session *session.Session) *StreamerConnection {
-	apiGateway := apigatewaymanagementapi.New(session, aws.NewConfig().WithRegion("us-west-2"))
+func NewStreamerConnection(session *session.Session, domain string, stage string) *StreamerConnection {
+	apiGateway := apigatewaymanagementapi.New(session, aws.NewConfig().WithRegion("us-west-2").WithEndpoint(domain+"/"+stage))
 	return &StreamerConnection{
 		ApiGwManagementApi: apiGateway,
 		Session:            session,
