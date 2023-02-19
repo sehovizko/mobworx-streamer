@@ -5,7 +5,7 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
-	"github.com/go-redis/redis/v8"
+	"github.com/redis/go-redis/v9"
 	"os"
 )
 
