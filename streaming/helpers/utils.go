@@ -19,7 +19,7 @@ type Utils struct {
 	S3UserBucked       string
 }
 
-func CreateUtils(streamerConnection *StreamerConnection) *Utils {
+func NewUtils(streamerConnection *StreamerConnection) *Utils {
 	var utils Utils
 	utils.StreamerConnection = new(StreamerConnection)
 	utils.StreamerConnection = streamerConnection
@@ -28,45 +28,43 @@ func CreateUtils(streamerConnection *StreamerConnection) *Utils {
 
 }
 
-type message struct {
-	payload   *Payload
-	timeStamp string
-	action    SignalAction
+type Message struct {
+	Payload   *Payload
+	TimeStamp string
+	Action    SignalAction
 }
-
 type Payload struct {
-	segment      *segment
-	videoSegment *videoSegment
-	audioSegment *audioSegment
-	part         *part
-	videoPart    *videoPart
-	audioPart    *audioPart
+	Segment      *Segment
+	VideoSegment *VideoSegment
+	AudioSegment *AudioSegment
+	Part         *Part
+	VideoPart    *VideoPart
+	AudioPart    *AudioPart
 }
-type segment struct {
-	mapping *mapping
-	data    []byte
+type Segment struct {
+	Mapping *Mapping
+	Data    []byte
 }
-type videoSegment struct {
-	mapping *mapping
-	data    []byte
+type VideoSegment struct {
+	Mapping *Mapping
+	Data    []byte
 }
-type audioSegment struct {
-	mapping *mapping
-	data    []byte
+type AudioSegment struct {
+	Mapping *Mapping
+	Data    []byte
 }
-type part struct {
-	data []byte
+type Part struct {
+	Data []byte
 }
-type videoPart struct {
-	data []byte
+type VideoPart struct {
+	Data []byte
 }
-type audioPart struct {
-	data []byte
+type AudioPart struct {
+	Data []byte
 }
-type mapping struct {
-	data []byte
+type Mapping struct {
+	Data []byte
 }
-
 type Response struct {
 	action    string
 	version   int
@@ -74,16 +72,17 @@ type Response struct {
 	timestamp string
 	size      int
 	latency   int
-	payload   Payload
+	payload   *Payload
 }
 
 func (u *Utils) GetAckSignal(event *events.APIGatewayProxyRequest, uploadLatency int) *Response {
-	msg := new(message)
+	msg := new(Message)
 	var err error
 	body := []byte(event.Body)
 	if event.IsBase64Encoded {
+		//Todo:This converting is possibly wrong.
 		data := b64.StdEncoding.EncodeToString(body)
-		err = json.Unmarshal([]byte(data), msg)
+		err = json.Unmarshal([]byte(data), &msg)
 
 	} else {
 		err = json.Unmarshal(body, &msg)
@@ -93,50 +92,50 @@ func (u *Utils) GetAckSignal(event *events.APIGatewayProxyRequest, uploadLatency
 		panic(err)
 	}
 
-	payload := msg.payload
+	payload := msg.Payload
 	ackAction := "unknown"
-	switch msg.action {
+	switch msg.Action {
 	case UpdateVariant:
 		ackAction = string(AckVariant)
-		payload.segment.mapping = nil
+		payload.Segment.Mapping = nil
 		break
 	case UpdateRendition:
 		ackAction = string(AckRendition)
-		payload.segment.mapping = nil
+		payload.Segment.Mapping = nil
 		break
 	case UpdateSegment:
 		ackAction = string(AckSegment)
-		payload.segment.data = nil
-		if payload.segment.mapping != nil {
-			payload.segment.mapping.data = nil
+		payload.Segment.Data = nil
+		if payload.Segment.Mapping != nil {
+			payload.Segment.Mapping.Data = nil
 		}
 	case UpdatePart:
 		ackAction = string(AckPart)
-		payload.part.data = nil
-		if payload.segment != nil && payload.segment.mapping != nil {
-			payload.segment.mapping.data = nil
+		payload.Part.Data = nil
+		if payload.Segment != nil && payload.Segment.Mapping != nil {
+			payload.Segment.Mapping.Data = nil
 		}
 		break
 	case UpdateDemuxSegment:
 		ackAction = string(AckDemuxSegment)
-		payload.videoSegment.data = nil
-		if payload.videoSegment.mapping != nil {
-			payload.videoSegment.mapping.data = nil
+		payload.VideoSegment.Data = nil
+		if payload.VideoSegment.Mapping != nil {
+			payload.VideoSegment.Mapping.Data = nil
 		}
-		payload.audioSegment.data = nil
-		if payload.audioSegment.mapping != nil {
-			payload.audioSegment.mapping.data = nil
+		payload.AudioSegment.Data = nil
+		if payload.AudioSegment.Mapping != nil {
+			payload.AudioSegment.Mapping.Data = nil
 		}
 		break
 	case UpdateDemuxPart:
 		ackAction = string(AckDemuxPart)
-		payload.videoPart.data = nil
-		if payload.videoSegment != nil && payload.videoSegment.mapping != nil {
-			payload.videoSegment.mapping.data = nil
+		payload.VideoPart.Data = nil
+		if payload.VideoSegment != nil && payload.VideoSegment.Mapping != nil {
+			payload.VideoSegment.Mapping.Data = nil
 		}
-		payload.audioPart.data = nil
-		if payload.audioSegment != nil && payload.audioSegment.mapping != nil {
-			payload.audioSegment.mapping.data = nil
+		payload.AudioPart.Data = nil
+		if payload.AudioSegment != nil && payload.AudioSegment.Mapping != nil {
+			payload.AudioSegment.Mapping.Data = nil
 		}
 		break
 	case Ping:
@@ -165,7 +164,7 @@ func (u *Utils) GetAckSignal(event *events.APIGatewayProxyRequest, uploadLatency
 		timestamp: strconv.FormatInt(time.Now().Unix(), 10),
 		size:      size,
 		latency:   uploadLatency, //TODO: Should be latency variable.
-		payload:   Payload{},
+		payload:   payload,
 	}
 }
 
