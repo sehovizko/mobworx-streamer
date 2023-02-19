@@ -27,7 +27,7 @@ export class StreamingNestedStack extends NestedStack {
 
     [
       {
-        path: "live/update/rendition",
+        path: "/live/update/rendition",
         methods: [HttpMethod.POST],
         integration: new HttpLambdaIntegration(
           "updateRenditionHttp",
