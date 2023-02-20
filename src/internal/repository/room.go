@@ -1,6 +1,6 @@
 package repository
 
-import "hls.streaming.com/src/internal/model"
+import "github.com/sehovizko/mobworx-streamer/src/internal/model"
 
 type RoomRepository struct {
 }
