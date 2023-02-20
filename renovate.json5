@@ -34,5 +34,10 @@
     "aws-cdk-lib",
     "constructs",
     "projen"
+  ],
+  "ignorePaths": [
+    "**/.github/workflows",
+    "**/package.json",
+    "**/package-lock.json"
   ]
 }

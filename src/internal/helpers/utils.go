@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/google/uuid"
 	"log"
@@ -14,16 +15,24 @@ import (
 	"time"
 )
 
-type Utils struct {
-	StreamerConnection *StreamerConnection
-	S3UserBucked       string
+type Utils interface {
+	GetAckSignal(event *events.APIGatewayProxyRequest, uploadLatency int) *Response
+	Ack(event *events.APIGatewayWebsocketProxyRequest, uploadLatency int) error
+	DumpToS3(key string, data []byte) (*s3.PutObjectOutput, error)
 }
 
-func NewUtils(streamerConnection *StreamerConnection) *Utils {
-	var utils Utils
-	utils.StreamerConnection = streamerConnection
-	utils.S3UserBucked = os.Getenv("S3_USER_BUCKET")
-	return &utils
+type utils struct {
+	S3Session          *s3.S3
+	S3UserBucket       string
+	StreamerConnection *StreamerConnection
+}
+
+func NewUtils(session *session.Session, domain, stage string) Utils {
+	return &utils{
+		S3Session:          s3.New(session, aws.NewConfig().WithRegion("us-west-2")),
+		S3UserBucket:       os.Getenv("S3_USER_BUCKET"),
+		StreamerConnection: NewStreamerConnection(session, domain, stage),
+	}
 }
 
 type Message struct {
@@ -82,7 +91,7 @@ type Response struct {
 	Payload   *Payload
 }
 
-func (u *Utils) GetAckSignal(event *events.APIGatewayProxyRequest, uploadLatency int) *Response {
+func (u *utils) GetAckSignal(event *events.APIGatewayProxyRequest, uploadLatency int) *Response {
 	msg := new(Message)
 	body := []byte(event.Body)
 
@@ -174,7 +183,7 @@ func (u *Utils) GetAckSignal(event *events.APIGatewayProxyRequest, uploadLatency
 	}
 }
 
-func (u *Utils) Ack(event *events.APIGatewayWebsocketProxyRequest, uploadLatency int) error {
+func (u *utils) Ack(event *events.APIGatewayWebsocketProxyRequest, uploadLatency int) error {
 	tempData, err := json.Marshal(event)
 	if err != nil {
 		return err
@@ -206,13 +215,12 @@ func (u *Utils) Ack(event *events.APIGatewayWebsocketProxyRequest, uploadLatency
 	return nil
 }
 
-func (u *Utils) DumpToS3(key string, data []byte) (*s3.PutObjectOutput, error) {
-	svc := s3.New(u.StreamerConnection.Session, aws.NewConfig().WithRegion("us-west-2"))
+func (u *utils) DumpToS3(key string, data []byte) (*s3.PutObjectOutput, error) {
 	putObject := &s3.PutObjectInput{
 		ACL:    aws.String("public-read"),
 		Body:   aws.ReadSeekCloser(strings.NewReader(string(data))),
-		Bucket: aws.String(u.S3UserBucked),
+		Bucket: aws.String(u.S3UserBucket),
 		Key:    aws.String(key),
 	}
-	return svc.PutObject(putObject)
+	return u.S3Session.PutObject(putObject)
 }

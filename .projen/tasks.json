@@ -185,6 +185,30 @@
         }
       ]
     },
+    "release:dev": {
+      "name": "release:dev",
+      "description": "Prepare a release from \"dev\" branch",
+      "env": {
+        "RELEASE": "true"
+      },
+      "steps": [
+        {
+          "exec": "rm -fr dist"
+        },
+        {
+          "spawn": "bump"
+        },
+        {
+          "spawn": "build"
+        },
+        {
+          "spawn": "unbump"
+        },
+        {
+          "exec": "git diff --ignore-space-at-eol --exit-code"
+        }
+      ]
+    },
     "synth": {
       "name": "synth",
       "description": "Synthesizes your cdk app into cdk.out",

@@ -2,7 +2,7 @@
   "name": "mobworx-streamer",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sehovizko/mobwrox-streamer.git"
+    "url": "https://github.com/sehovizko/mobworx-streamer.git"
   },
   "scripts": {
     "build": "npx projen build",
@@ -21,6 +21,7 @@
     "post-upgrade": "npx projen post-upgrade",
     "pre-compile": "npx projen pre-compile",
     "release": "npx projen release",
+    "release:dev": "npx projen release:dev",
     "synth": "npx projen synth",
     "synth:silent": "npx projen synth:silent",
     "test": "npx projen test",

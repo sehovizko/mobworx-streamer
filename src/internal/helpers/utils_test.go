@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"os"
 	"strconv"
 	"testing"
 	"time"
@@ -44,8 +45,7 @@ func TestGetAckSignal(t *testing.T) {
 	}
 
 	mySession := session.Must(session.NewSession())
-	sc := NewStreamerConnection(mySession, "domain", "stage")
-	utils := NewUtils(sc)
+	utils := NewUtils(mySession, "domain", "stage")
 
 	messageByte, _ := json.Marshal(*message)
 
@@ -74,6 +74,10 @@ func TestGetAckSignal(t *testing.T) {
 }
 
 func TestAck(t *testing.T) {
+	if os.Getenv("CI") == "true" {
+		t.Skip("Skipping test in CI environment")
+	}
+
 	part := &Part{Data: []byte("part data")}
 	videoPart := &VideoPart{Data: nil}
 	audioPart := &AudioPart{Data: nil}
@@ -105,8 +109,7 @@ func TestAck(t *testing.T) {
 	}
 
 	mySession := session.Must(session.NewSession())
-	sc := NewStreamerConnection(mySession, "domain", "stage")
-	utils := NewUtils(sc)
+	utils := NewUtils(mySession, "domain", "stage")
 
 	messageByte, _ := json.Marshal(*message)
 	request := &events.APIGatewayWebsocketProxyRequest{
@@ -125,10 +128,12 @@ func TestAck(t *testing.T) {
 }
 
 func TestDumpToS3(t *testing.T) {
+	if os.Getenv("CI") == "true" {
+		t.Skip("Skipping test in CI environment")
+	}
+
 	mySession := session.Must(session.NewSession())
-	sc := NewStreamerConnection(mySession, "domain", "stage")
-	utils := NewUtils(sc)
-	utils.S3UserBucked = "S3_USER_BUCKET"
+	utils := NewUtils(mySession, "domain", "stage")
 	response, err := utils.DumpToS3("key", []byte("data"))
 	require.NoError(t, err)
 	fmt.Println(response)
