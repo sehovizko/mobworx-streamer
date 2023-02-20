@@ -34,6 +34,7 @@ func GetMimeType(renditionType RenditionType) string {
 }
 
 func HandleUpdateRendition(_ aws.Context, event events.APIGatewayProxyRequest) error {
+
 	return nil
 }
 

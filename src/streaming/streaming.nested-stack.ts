@@ -13,6 +13,11 @@ export interface StreamingNestedStackProps extends NestedStackProps {
 }
 
 export class StreamingNestedStack extends NestedStack {
+  updatePartLambda = new GoFunction(this, "UpdatePart", {
+    entry: join(__dirname, "update-part.go"),
+    vpc: this.props.vpc,
+  });
+
   updateRenditionLambda = new GoFunction(this, "UpdateRendition", {
     entry: join(__dirname, "update-rendition.go"),
     vpc: this.props.vpc,
@@ -26,6 +31,14 @@ export class StreamingNestedStack extends NestedStack {
     super(scope, id, props);
 
     [
+      {
+        path: "/live/update/part",
+        methods: [HttpMethod.POST],
+        integration: new HttpLambdaIntegration(
+          "updateRenditionHttp",
+          this.updatePartLambda
+        ),
+      },
       {
         path: "/live/update/rendition",
         methods: [HttpMethod.POST],
