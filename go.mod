@@ -1,4 +1,4 @@
-module hls.streaming.com
+module github.com/sehovizko/mobworx-streamer
 
 go 1.20
 

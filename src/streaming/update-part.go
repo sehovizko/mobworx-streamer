@@ -4,7 +4,7 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
-	"hls.streaming.com/src/internal/signals"
+	"github.com/sehovizko/mobworx-streamer/src/internal/signals"
 	"log"
 )
 

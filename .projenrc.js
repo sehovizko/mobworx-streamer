@@ -2,7 +2,7 @@ const { awscdk, TextFile } = require("projen");
 
 const project = new awscdk.AwsCdkTypeScriptApp({
   name: "mobworx-streamer",
-  repository: "https://github.com/sehovizko/mobwrox-streamer.git",
+  repository: "https://github.com/sehovizko/mobworx-streamer.git",
   keywords: ["hls", "streaming", "golang"],
   deps: [
     "@aws-cdk/aws-lambda-go-alpha",

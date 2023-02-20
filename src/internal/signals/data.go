@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
-	"hls.streaming.com/src/internal/helpers"
+	"github.com/sehovizko/mobworx-streamer/src/internal/helpers"
 	"time"
 )
 
