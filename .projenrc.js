@@ -12,14 +12,44 @@ const project = new awscdk.AwsCdkTypeScriptApp({
 
   prettier: true,
   release: true,
+  releaseBranches: {
+    dev: {},
+  },
   defaultReleaseBranch: "main",
-  workflowNodeVersion: "18",
+
   cdkVersion: "2.65.0",
 
+  workflowNodeVersion: "18",
+  workflowBootstrapSteps: [
+    {
+      name: "Go setup",
+      uses: "actions/setup-go@v3",
+      with: {
+        "go-version": "1.20.1",
+        cache: true,
+      },
+    },
+    {
+      name: "Run Go tests",
+      run: "go test ./...",
+      workingDirectory: "src/internal",
+    },
+  ],
+
   renovatebot: true,
+  renovatebotOptions: {
+    overrideConfig: {
+      ignorePaths: [
+        "**/.github/workflows",
+        "**/package.json",
+        "**/package-lock.json",
+      ],
+    },
+  },
+  autoMerge: true,
   autoApproveUpgrades: true,
   autoApproveOptions: {
-    allowedUsernames: ["renovate[bot]"],
+    allowedUsernames: ["sehovizko"],
   },
   license: false,
 
