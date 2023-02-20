@@ -37,6 +37,7 @@
   ],
   "ignorePaths": [
     "**/.github/workflows",
+    "**/package.json",
     "**/package-lock.json"
   ]
 }

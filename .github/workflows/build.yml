@@ -26,7 +26,7 @@ jobs:
           cache: true
       - name: Run Go tests
         run: go test ./...
-        working-directory: src
+        working-directory: src/internal
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
