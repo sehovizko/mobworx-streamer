@@ -32,7 +32,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
     {
       name: "Run Go tests",
       run: "go test ./...",
-      workingDirectory: "src",
+      workingDirectory: "src/internal",
     },
   ],
 
