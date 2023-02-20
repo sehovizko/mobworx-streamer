@@ -3,8 +3,10 @@ package signals
 import (
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"github.com/google/uuid"
 	"hls.streaming.com/src/internal/helpers"
+	"time"
 )
 
 type DataGeneralShape struct {
@@ -98,6 +100,10 @@ const (
 	DataRenditionTypeClosedCaptions DataRenditionType = "CLOSED-CAPTIONS"
 )
 
+var (
+	ErrNoTimestampFound = fmt.Errorf("%d: no timestamp found", 400)
+)
+
 func NewDataMessage(message string, encoded bool) (*DataGeneralShape, error) {
 	if encoded {
 		decodedMessage, err := base64.StdEncoding.DecodeString(message)
@@ -141,4 +147,11 @@ func NewDataMessageFromBuffer(buffer []byte) (*DataGeneralShape, error) {
 	}
 
 	return dgs, nil
+}
+
+func (s DataGeneralShape) UploadLatencyFromNow() (int64, error) {
+	if !s.Timestamp.IsZero() {
+		return time.Now().Sub(s.Timestamp.Time).Milliseconds(), nil
+	}
+	return 0, ErrNoTimestampFound
 }
