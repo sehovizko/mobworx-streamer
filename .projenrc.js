@@ -12,6 +12,9 @@ const project = new awscdk.AwsCdkTypeScriptApp({
 
   prettier: true,
   release: true,
+  releaseBranches: {
+    dev: {},
+  },
   defaultReleaseBranch: "main",
   workflowNodeVersion: "18",
   cdkVersion: "2.65.0",
@@ -19,7 +22,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   renovatebot: true,
   autoApproveUpgrades: true,
   autoApproveOptions: {
-    allowedUsernames: ["renovate[bot]"],
+    allowedUsernames: ["sehovizko"],
   },
   license: false,
 
