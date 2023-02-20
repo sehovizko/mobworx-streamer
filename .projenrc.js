@@ -26,6 +26,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
       uses: "actions/setup-go@v3",
       with: {
         "go-version": "1.20.1",
+        cache: true,
       },
     },
     {
@@ -36,6 +37,15 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   ],
 
   renovatebot: true,
+  renovatebotOptions: {
+    overrideConfig: {
+      ignorePaths: [
+        "**/.github/workflows",
+        "**/package.json",
+        "**/package-lock.json",
+      ],
+    },
+  },
   autoMerge: true,
   autoApproveUpgrades: true,
   autoApproveOptions: {
