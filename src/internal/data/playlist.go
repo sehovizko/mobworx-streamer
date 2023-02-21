@@ -32,8 +32,7 @@ func NewPlaylist(props *PlaylistProps) (*Playlist, error) {
 	}
 
 	p := &Playlist{d, props}
-	err = p.Validate()
-	if err != nil {
+	if err := p.Validate(); err != nil {
 		return nil, err
 	}
 

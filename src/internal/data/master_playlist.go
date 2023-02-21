@@ -27,8 +27,7 @@ func NewMasterPlaylist(props *MasterPlaylistProps) (*MasterPlaylist, error) {
 	}
 
 	mp := &MasterPlaylist{p, props}
-	err = mp.Validate()
-	if err != nil {
+	if err := mp.Validate(); err != nil {
 		return nil, err
 	}
 

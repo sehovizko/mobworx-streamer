@@ -48,8 +48,7 @@ func NewMediaPlaylist(props *MediaPlaylistProps) (*MediaPlaylist, error) {
 	}
 
 	mp := &MediaPlaylist{p, props}
-	err = mp.Validate()
-	if err != nil {
+	if err := mp.Validate(); err != nil {
 		return nil, err
 	}
 

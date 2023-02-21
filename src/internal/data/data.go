@@ -25,9 +25,8 @@ func (d Data) Validate() error {
 
 func NewData(dataType Type) (*Data, error) {
 	d := &Data{dataType}
-	err := d.Validate()
-	if err != nil {
+	if err := d.Validate(); err != nil {
 		return nil, err
 	}
-	return d, err
+	return d, nil
 }
