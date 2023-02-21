@@ -15,6 +15,7 @@ type DataGeneralShape struct {
 	Id        uuid.UUID                `json:"id"`
 	Timestamp helpers.Timestamp        `json:"timestamp"`
 	NumBytes  int                      `json:"numbytes"`
+	UserId    uuid.UUID                `json:"UserId"`
 	Payload   *DataGeneralShapePayload `json:"payload"`
 }
 
@@ -32,15 +33,15 @@ type DataGeneralShapePayloadPlaylist struct {
 }
 
 type DataGeneralShapePayloadVariant struct {
-	Id                 uuid.UUID `json:"id"`
-	Codecs             string    `json:"codecs,omitempty"`
-	Bandwidth          int       `json:"bandwidth,omitempty"`
-	Audio              string    `json:"audio,omitempty"`
-	Version            int       `json:"version,omitempty"`
-	TargetDuration     int       `json:"targetDuration,omitempty"`
-	TargetPartDuration float64   `json:"targetPartDuration,omitempty"`
-	CacheKey           string    `json:"cacheKey,omitempty"`
-	InitCacheKey       string    `json:"initCacheKey,omitempty"`
+	Id                 string  `json:"id"`
+	Codecs             string  `json:"codecs,omitempty"`
+	Bandwidth          int     `json:"bandwidth,omitempty"`
+	Audio              string  `json:"audio,omitempty"`
+	Version            int     `json:"version,omitempty"`
+	TargetDuration     int     `json:"targetDuration,omitempty"`
+	TargetPartDuration float64 `json:"targetPartDuration,omitempty"`
+	CacheKey           string  `json:"cacheKey,omitempty"`
+	InitCacheKey       string  `json:"initCacheKey,omitempty"`
 }
 
 type DataGeneralShapePayloadRendition struct {
@@ -58,7 +59,7 @@ type DataGeneralShapePayloadRendition struct {
 }
 
 type DataGeneralShapePayloadSegment struct {
-	Id              uuid.UUID                   `json:"id,omitempty"`
+	Id              string                      `json:"id,omitempty"`
 	Sequence        int                         `json:"sequence,omitempty"`
 	Duration        float64                     `json:"duration,omitempty"`
 	Discontinuity   bool                        `json:"discontinuity,omitempty"`
@@ -69,18 +70,18 @@ type DataGeneralShapePayloadSegment struct {
 }
 
 type MediaInitializationSection struct {
-	Id   uuid.UUID `json:"id"`
-	Data string    `json:"data"`
+	Id   string `json:"id"`
+	Data string `json:"data"`
 }
 
 type DataGeneralShapePayloadPart struct {
-	Id          uuid.UUID `json:"id"`
-	Sequence    int       `json:"sequence"`
-	Duration    float64   `json:"duration"`
-	Independent bool      `json:"independent,omitempty"`
-	Gap         bool      `json:"gap,omitempty"`
-	Data        string    `json:"data"`
-	CacheKey    string    `json:"cacheKey,omitempty"`
+	Id          string  `json:"id"`
+	Sequence    int     `json:"sequence"`
+	Duration    float64 `json:"duration"`
+	Independent bool    `json:"independent,omitempty"`
+	Gap         bool    `json:"gap,omitempty"`
+	Data        string  `json:"data"`
+	CacheKey    string  `json:"cacheKey,omitempty"`
 }
 
 type DataAction string
@@ -125,25 +126,25 @@ func NewDataMessageFromBuffer(buffer []byte) (*DataGeneralShape, error) {
 	masterPlaylistId := dgs.Payload.Playlist.Id.String()
 
 	if dgs.Payload.Variant != nil {
-		dgs.Payload.Variant.CacheKey = masterPlaylistId + "/" + dgs.Payload.Variant.Id.String()
+		dgs.Payload.Variant.CacheKey = masterPlaylistId + "/" + dgs.Payload.Variant.Id
 		if dgs.Payload.Segment.Map != nil {
-			dgs.Payload.Variant.InitCacheKey = masterPlaylistId + "/" + dgs.Payload.Segment.Map.Id.String()
+			dgs.Payload.Variant.InitCacheKey = masterPlaylistId + "/" + dgs.Payload.Segment.Map.Id
 		}
 	}
 
 	if dgs.Payload.Rendition != nil {
 		dgs.Payload.Rendition.CacheKey = masterPlaylistId + "/" + dgs.Payload.Rendition.Id.String()
 		if dgs.Payload.Segment.Map != nil {
-			dgs.Payload.Rendition.InitCacheKey = masterPlaylistId + "/" + dgs.Payload.Segment.Map.Id.String()
+			dgs.Payload.Rendition.InitCacheKey = masterPlaylistId + "/" + dgs.Payload.Segment.Map.Id
 		}
 	}
 
 	if dgs.Payload.Segment != nil {
-		dgs.Payload.Segment.CacheKey = masterPlaylistId + "/" + dgs.Payload.Segment.Id.String()
+		dgs.Payload.Segment.CacheKey = masterPlaylistId + "/" + dgs.Payload.Segment.Id
 	}
 
 	if dgs.Payload.Part != nil {
-		dgs.Payload.Part.CacheKey = masterPlaylistId + "/" + dgs.Payload.Part.Id.String()
+		dgs.Payload.Part.CacheKey = masterPlaylistId + "/" + dgs.Payload.Part.Id
 	}
 
 	return dgs, nil

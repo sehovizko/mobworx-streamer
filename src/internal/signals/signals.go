@@ -21,7 +21,7 @@ func generateTestDataGeneralShape(dgsId, playlistId, variantId, renditionId, ren
 				Version: 1,
 			},
 			Variant: &DataGeneralShapePayloadVariant{
-				Id:                 uuid.MustParse(variantId),
+				Id:                 variantId,
 				Codecs:             "avc1.4dc00d, mp4a.40.2",
 				Bandwidth:          2048,
 				Audio:              "example-variant-audio",
@@ -45,20 +45,20 @@ func generateTestDataGeneralShape(dgsId, playlistId, variantId, renditionId, ren
 				InitCacheKey:       playlistId + "/" + misId,
 			},
 			Segment: &DataGeneralShapePayloadSegment{
-				Id:              uuid.MustParse(segmentId),
+				Id:              segmentId,
 				Sequence:        0,
 				Duration:        123.123123123,
 				Discontinuity:   true,
 				ProgramDateTime: helpers.Timestamp{Time: time.Unix(1676898433, 0)},
 				Map: &MediaInitializationSection{
-					Id:   uuid.MustParse(misId),
+					Id:   misId,
 					Data: "qewqweqweqwe",
 				},
 				Data:     "qwedqweqweq",
 				CacheKey: playlistId + "/" + segmentId,
 			},
 			Part: &DataGeneralShapePayloadPart{
-				Id:          uuid.MustParse(partId),
+				Id:          partId,
 				Sequence:    0,
 				Duration:    123.123,
 				Independent: true,
