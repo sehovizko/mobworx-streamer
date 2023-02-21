@@ -1,8 +1,11 @@
 package signals
 
 import (
+	"bytes"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"io"
+	"os"
 	"strconv"
 	"testing"
 	"time"
@@ -135,4 +138,41 @@ func TestDataGeneralShape_UploadLatencyFromNow(t *testing.T) {
 	now, err := dgs.UploadLatencyFromNow()
 	require.NoError(t, err)
 	assert.Greater(t, now, time.Duration(10206304))
+}
+
+func TestNewDataMessage_FromResources(t *testing.T) {
+	cases := []struct {
+		Filename       string
+		ExpectedAction DataAction
+	}{
+		{
+			Filename:       "data_update_variant_init.mp4.json",
+			ExpectedAction: DataActionUpdateVariant,
+		},
+		{
+			Filename:       "data_update_part_index_0.m4s.json",
+			ExpectedAction: DataActionUpdatePart,
+		},
+		{
+			Filename:       "data_update_part_index_1.m4s.json",
+			ExpectedAction: DataActionUpdatePart,
+		},
+	}
+
+	for i, c := range cases {
+		t.Run("Case/"+strconv.Itoa(i+1), func(t *testing.T) {
+			open, err := os.Open(c.Filename)
+			require.NoError(t, err)
+			defer open.Close()
+
+			var buf bytes.Buffer
+			_, err = io.Copy(&buf, open)
+			require.NoError(t, err)
+
+			dsg, err := NewDataMessageFromBuffer(buf.Bytes())
+			require.NoError(t, err)
+
+			assert.Equal(t, dsg.Action, c.ExpectedAction)
+		})
+	}
 }
