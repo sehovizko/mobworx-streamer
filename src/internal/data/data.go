@@ -18,7 +18,7 @@ func (d Data) Validate() error {
 		return errspec.ParameterIsUndefined("dataType")
 	}
 	if d.DataType != TypePlaylist && d.DataType != TypeSegment {
-		return errspec.InvalidParameter("dataType", d.DataType)
+		return errspec.InvalidParameter("dataType", string(d.DataType))
 	}
 	return nil
 }
