@@ -7,10 +7,10 @@ type ServerControl struct {
 }
 
 type ServerControlProps struct {
-	CanBlockReload *bool `json:"canBlockReload"`
-	CanSkipUntil   bool  `json:"canSkipUntil"`
-	HoldBack       bool  `json:"holdBack"`
-	PartHoldBack   bool  `json:"partHoldBack"`
+	CanBlockReload *bool   `json:"canBlockReload"`
+	CanSkipUntil   int     `json:"canSkipUntil"`
+	HoldBack       bool    `json:"holdBack"`
+	PartHoldBack   float64 `json:"partHoldBack"`
 }
 
 func (sc ServerControl) Validate() error {

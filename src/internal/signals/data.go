@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
+	"github.com/sehovizko/mobworx-streamer/src/internal/errspec"
 	"github.com/sehovizko/mobworx-streamer/src/internal/helpers"
 	"time"
 )
@@ -35,7 +36,7 @@ type DataGeneralShapePayloadPlaylist struct {
 type DataGeneralShapePayloadVariant struct {
 	Id                 string  `json:"id"`
 	Codecs             string  `json:"codecs,omitempty"`
-	Bandwidth          int     `json:"bandwidth,omitempty"`
+	Bandwidth          int64   `json:"bandwidth,omitempty"`
 	Audio              string  `json:"audio,omitempty"`
 	Version            int     `json:"version,omitempty"`
 	TargetDuration     int     `json:"targetDuration,omitempty"`
@@ -71,7 +72,7 @@ type DataGeneralShapePayloadSegment struct {
 
 type MediaInitializationSection struct {
 	Id   string `json:"id"`
-	Data string `json:"data"`
+	Data []byte `json:"data"`
 }
 
 type DataGeneralShapePayloadPart struct {
@@ -155,4 +156,169 @@ func (s DataGeneralShape) UploadLatencyFromNow() (int64, error) {
 		return time.Now().Sub(s.Timestamp.Time).Milliseconds(), nil
 	}
 	return 0, ErrNoTimestampFound
+}
+
+func (s DataGeneralShape) GetMediaPlaylistId() (string, error) {
+	if s.Payload == nil {
+		return "", errspec.ParameterIsUndefined("DataGeneralShape.Payload")
+	}
+
+	if s.Payload.Variant != nil {
+		return s.Payload.Variant.Id, nil
+	}
+
+	if s.Payload.Rendition != nil {
+		return s.Payload.Rendition.Id.String(), nil
+	}
+
+	return "", errspec.ParameterIsUndefined("DataGeneralShape.Payload.Variant and GeneralShape.Payload.Rendition")
+}
+
+func (s DataGeneralShape) GetMediaPlaylistCacheKey() (string, error) {
+	if s.Payload == nil {
+		return "", errspec.ParameterIsUndefined("DataGeneralShape.Payload")
+	}
+
+	if s.Payload.Variant != nil {
+		return s.Payload.Variant.CacheKey, nil
+	}
+
+	if s.Payload.Rendition != nil {
+		return s.Payload.Rendition.CacheKey, nil
+	}
+
+	return "", errspec.ParameterIsUndefined("DataGeneralShape.Payload.Variant and GeneralShape.Payload.Rendition")
+}
+
+func (s DataGeneralShape) GetMediaPlaylistInitCacheKey() (string, error) {
+	if s.Payload == nil {
+		return "", errspec.ParameterIsUndefined("DataGeneralShape.Payload")
+	}
+
+	if s.Payload.Variant != nil {
+		return s.Payload.Variant.InitCacheKey, nil
+	}
+
+	if s.Payload.Rendition != nil {
+		return s.Payload.Rendition.InitCacheKey, nil
+	}
+
+	return "", errspec.ParameterIsUndefined("DataGeneralShape.Payload.Variant and GeneralShape.Payload.Rendition")
+}
+
+func (s DataGeneralShape) GetMediaPlaylistTargetDuration() (int, error) {
+	if s.Payload == nil {
+		return 0, errspec.ParameterIsUndefined("DataGeneralShape.Payload")
+	}
+
+	if s.Payload.Variant != nil {
+		return s.Payload.Variant.TargetDuration, nil
+	}
+
+	if s.Payload.Rendition != nil {
+		return s.Payload.Rendition.TargetDuration, nil
+	}
+
+	return 0, errspec.ParameterIsUndefined("DataGeneralShape.Payload.Variant and GeneralShape.Payload.Rendition")
+}
+
+func (s DataGeneralShape) GetMediaPlaylistTargetPartDuration() (float64, error) {
+	if s.Payload == nil {
+		return 0, errspec.ParameterIsUndefined("DataGeneralShape.Payload")
+	}
+
+	if s.Payload.Variant != nil {
+		return s.Payload.Variant.TargetPartDuration, nil
+	}
+
+	if s.Payload.Rendition != nil {
+		return s.Payload.Rendition.TargetPartDuration, nil
+	}
+
+	return 0, errspec.ParameterIsUndefined("DataGeneralShape.Payload.Variant and GeneralShape.Payload.Rendition")
+}
+
+func (s DataGeneralShape) GetMediaPlaylistBandwidth() (int64, error) {
+	if s.Payload == nil {
+		return 0, errspec.ParameterIsUndefined("DataGeneralShape.Payload")
+	}
+
+	if s.Payload.Variant != nil {
+		return s.Payload.Variant.Bandwidth, nil
+	}
+
+	return 0, errspec.ParameterIsUndefined("DataGeneralShape.Payload.Variant")
+}
+
+func (s DataGeneralShape) GetMediaPlaylistAudio() (string, error) {
+	if s.Payload == nil {
+		return "", errspec.ParameterIsUndefined("DataGeneralShape.Payload")
+	}
+
+	if s.Payload.Variant != nil {
+		return s.Payload.Variant.Audio, nil
+	}
+
+	return "", errspec.ParameterIsUndefined("DataGeneralShape.Payload.Variant")
+}
+
+func (s DataGeneralShape) GetMediaPlaylistVersion() (int, error) {
+	if s.Payload == nil {
+		return 0, errspec.ParameterIsUndefined("DataGeneralShape.Payload")
+	}
+
+	if s.Payload.Variant != nil {
+		return s.Payload.Variant.Version, nil
+	}
+
+	return 0, errspec.ParameterIsUndefined("DataGeneralShape.Payload.Variant")
+}
+
+func (s DataGeneralShape) GetMasterPlaylistId() (string, error) {
+	if s.Payload == nil {
+		return "", errspec.ParameterIsUndefined("DataGeneralShape.Payload")
+	}
+
+	if s.Payload.Playlist != nil {
+		return s.Payload.Playlist.Id.String(), nil
+	}
+
+	return "", errspec.ParameterIsUndefined("DataGeneralShape.Payload.Id")
+}
+
+func (s DataGeneralShape) GetStorageKey() (string, error) {
+	masterPlaylistId, err := s.GetMasterPlaylistId()
+	if err != nil {
+		return "", err
+	}
+
+	mediaPlaylistId, err := s.GetMediaPlaylistId()
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("%s/%s/storage", masterPlaylistId, mediaPlaylistId), nil
+}
+
+func (s DataGeneralShape) GetS3Prefix() (string, error) {
+	masterPlaylistId, err := s.GetMasterPlaylistId()
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("%s/%s", s.UserId, masterPlaylistId), nil
+}
+
+func (s DataGeneralShape) GetInitSectionStorageKey(mediaInitializationSectionUri string) (string, error) {
+	s3Prefix, err := s.GetS3Prefix()
+	if err != nil {
+		return "", err
+	}
+
+	mediaPlaylistId, err := s.GetMediaPlaylistId()
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("%s/%s/%s", s3Prefix, mediaPlaylistId, mediaInitializationSectionUri), nil
 }

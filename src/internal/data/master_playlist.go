@@ -1,6 +1,9 @@
 package data
 
-import "github.com/aws/aws-sdk-go/aws"
+import (
+	"encoding/json"
+	"github.com/aws/aws-sdk-go/aws"
+)
 
 type MasterPlaylist struct {
 	*Playlist
@@ -31,5 +34,16 @@ func NewMasterPlaylist(props *MasterPlaylistProps) (*MasterPlaylist, error) {
 		return nil, err
 	}
 
+	return mp, nil
+}
+
+func NewMasterPlaylistFromString(message string) (*MasterPlaylist, error) {
+	mp := &MasterPlaylist{}
+	if err := json.Unmarshal([]byte(message), mp); err != nil {
+		return nil, err
+	}
+	if err := mp.Validate(); err != nil {
+		return nil, err
+	}
 	return mp, nil
 }

@@ -27,6 +27,7 @@ type RenditionProps struct {
 type RenditionType string
 
 const (
+	RenditionTypeAudio          RenditionType = "AUDIO"
 	RenditionTypeSubtitles      RenditionType = "SUBTITLES"
 	RenditionTypeClosedCaptions RenditionType = "CLOSED-CAPTIONS"
 )
