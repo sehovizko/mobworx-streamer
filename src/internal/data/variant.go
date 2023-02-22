@@ -7,19 +7,24 @@ type Variant struct {
 }
 
 type VariantProps struct {
-	Uri               string       `json:"uri"`
-	IsIFrameOnly      bool         `json:"isIFrameOnly"`
-	Bandwidth         int64        `json:"bandwidth"`
-	AverageBandwidth  int64        `json:"averageBandwidth"`
-	Codecs            string       `json:"codecs"`
-	Resolution        string       `json:"resolution"`
-	FrameRate         string       `json:"frameRate"`
-	HdcpLevel         int          `json:"hdcpLevel"`
-	Audio             []*Rendition `json:"audio"`
-	Video             []string     `json:"video"`
-	Subtitles         []string     `json:"subtitles"`
-	ClosedCaptions    []string     `json:"closedCaptions"`
+	Uri               string             `json:"uri"`
+	IsIFrameOnly      bool               `json:"isIFrameOnly"`
+	Bandwidth         int64              `json:"bandwidth"`
+	AverageBandwidth  int64              `json:"averageBandwidth"`
+	Codecs            string             `json:"codecs"`
+	Resolution        *VariantResolution `json:"resolution"`
+	FrameRate         float64            `json:"frameRate"`
+	HdcpLevel         int                `json:"hdcpLevel"`
+	Audio             []*Rendition       `json:"audio"`
+	Video             []*Rendition       `json:"video"`
+	Subtitles         []*Rendition       `json:"subtitles"`
+	ClosedCaptions    []*Rendition       `json:"closedCaptions"`
 	CurrentRenditions `json:"currentRenditions"`
+}
+
+type VariantResolution struct {
+	Width  int `json:"width"`
+	Height int `json:"height"`
 }
 
 type CurrentRenditions struct {

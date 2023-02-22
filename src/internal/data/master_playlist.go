@@ -12,10 +12,10 @@ type MasterPlaylist struct {
 
 type MasterPlaylistProps struct {
 	*PlaylistProps
-	Variants        []*Variant `json:"variants"`
-	CurrentVariant  *Variant   `json:"currentVariant,omitempty"`
-	SessionDataList []string   `json:"sessionDataList"`
-	SessionKeyList  []string   `json:"sessionKeyList"`
+	Variants        []*Variant     `json:"variants"`
+	CurrentVariant  *Variant       `json:"currentVariant,omitempty"`
+	SessionDataList []*SessionData `json:"sessionDataList"`
+	SessionKeyList  []*Key         `json:"sessionKeyList"`
 }
 
 func (p MasterPlaylist) Validate() error {

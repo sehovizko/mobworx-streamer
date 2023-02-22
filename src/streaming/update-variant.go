@@ -2,8 +2,10 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
@@ -11,6 +13,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/redis/go-redis/v9"
 	"github.com/sehovizko/mobworx-streamer/src/internal/data"
+	"github.com/sehovizko/mobworx-streamer/src/internal/hls"
 	"github.com/sehovizko/mobworx-streamer/src/internal/signals"
 	"log"
 	"os"
@@ -22,7 +25,7 @@ var (
 	s3Uploader  *s3manager.Uploader
 )
 
-func HandleUpdateVariant(ctx aws.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func HandleUpdateVariant(ctx context.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	signal, err := signals.NewDataMessage(event.Body, event.IsBase64Encoded)
 	if err != nil {
 		return events.APIGatewayProxyResponse{}, err
@@ -154,6 +157,8 @@ func HandleUpdateVariant(ctx aws.Context, event events.APIGatewayProxyRequest) (
 		return events.APIGatewayProxyResponse{}, err
 	}
 
+	log.Println("mediaPlaylistSerialized: " + string(mediaPlaylistSerialized))
+
 	_, err = redisClient.Set(ctx, mediaPlaylistCacheKey, mediaPlaylistSerialized, time.Hour*10).Result()
 	if err != nil {
 		return events.APIGatewayProxyResponse{}, err
@@ -166,6 +171,8 @@ func HandleUpdateVariant(ctx aws.Context, event events.APIGatewayProxyRequest) (
 	if err != nil {
 		return events.APIGatewayProxyResponse{}, err
 	}
+
+	fmt.Println("mediaPlaylistSerializedChanged: " + string(mediaPlaylistSerializedChanged))
 
 	_, err = redisClient.Set(ctx, storageKey, mediaPlaylistSerializedChanged, time.Hour*10).Result()
 	if err != nil {
@@ -214,6 +221,8 @@ func HandleUpdateVariant(ctx aws.Context, event events.APIGatewayProxyRequest) (
 		return events.APIGatewayProxyResponse{}, err
 	}
 
+	log.Println("masterPlaylistSerialized:" + string(masterPlaylistSerialized))
+
 	redisClient.Set(ctx, masterPlaylistId, masterPlaylistSerialized, time.Hour*10)
 
 	initSectionStorageKey, err := signal.GetInitSectionStorageKey(mediaInitializationSection.Uri)
@@ -221,12 +230,36 @@ func HandleUpdateVariant(ctx aws.Context, event events.APIGatewayProxyRequest) (
 		return events.APIGatewayProxyResponse{}, err
 	}
 
-	base64Decoder := base64.NewDecoder(base64.StdEncoding, bytes.NewReader(signal.Payload.Segment.Map.Data))
+	log.Println("initSectionStorageKey: " + initSectionStorageKey)
+
+	base64Decoder := base64.NewDecoder(base64.StdEncoding, bytes.NewBufferString(signal.Payload.Segment.Map.Data))
 	_, err = s3Uploader.Upload(&s3manager.UploadInput{
 		Body:   base64Decoder,
 		ACL:    aws.String("public-read"),
 		Bucket: aws.String(os.Getenv("S3_USER_BUCKET")),
 		Key:    aws.String(initSectionStorageKey),
+	})
+	if err != nil {
+		return events.APIGatewayProxyResponse{}, err
+	}
+
+	playlist, err := hls.StringifyMasterPlaylist(masterPlaylist, false)
+	if err != nil {
+		return events.APIGatewayProxyResponse{}, err
+	}
+
+	log.Println("playlist: ", playlist)
+
+	s3Prefix, err := signal.GetS3Prefix()
+	if err != nil {
+		return events.APIGatewayProxyResponse{}, err
+	}
+
+	_, err = s3Uploader.Upload(&s3manager.UploadInput{
+		Body:   bytes.NewReader([]byte(playlist)),
+		ACL:    aws.String("public-read"),
+		Bucket: aws.String(os.Getenv("S3_USER_BUCKET")),
+		Key:    aws.String(fmt.Sprintf("%s/%s", s3Prefix, masterPlaylist.Uri)),
 	})
 	if err != nil {
 		return events.APIGatewayProxyResponse{}, err

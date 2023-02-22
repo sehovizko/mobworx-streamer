@@ -72,7 +72,7 @@ type DataGeneralShapePayloadSegment struct {
 
 type MediaInitializationSection struct {
 	Id   string `json:"id"`
-	Data []byte `json:"data"`
+	Data string `json:"data"`
 }
 
 type DataGeneralShapePayloadPart struct {
