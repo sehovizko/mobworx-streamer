@@ -1,6 +1,7 @@
 package data
 
 import (
+	"github.com/aws/aws-sdk-go/aws"
 	"github.com/sehovizko/mobworx-streamer/src/internal/errspec"
 	"strconv"
 )
@@ -11,22 +12,23 @@ type Rendition struct {
 
 type RenditionProps struct {
 	RenditionType   `json:"type"`
-	Uri             string   `json:"uri"`
-	GroupId         string   `json:"groupId"`
-	Language        string   `json:"language"`
-	AssocLanguage   string   `json:"assocLanguage"`
-	Name            string   `json:"name"`
-	IsDefault       bool     `json:"isDefault"`
-	AutoSelect      bool     `json:"autoselect"`
-	Forced          bool     `json:"forced"`
-	InStreamId      string   `json:"instreamId"`
-	Characteristics []string `json:"characteristics"`
-	Channels        []string `json:"channels"`
+	Uri             string `json:"uri"`
+	GroupId         string `json:"groupId"`
+	Language        string `json:"language"`
+	AssocLanguage   string `json:"assocLanguage"`
+	Name            string `json:"name"`
+	IsDefault       *bool  `json:"isDefault"`
+	AutoSelect      *bool  `json:"autoselect"`
+	Forced          *bool  `json:"forced"`
+	InStreamId      string `json:"instreamId"`
+	Characteristics string `json:"characteristics"`
+	Channels        string `json:"channels"`
 }
 
 type RenditionType string
 
 const (
+	RenditionTypeAudio          RenditionType = "AUDIO"
 	RenditionTypeSubtitles      RenditionType = "SUBTITLES"
 	RenditionTypeClosedCaptions RenditionType = "CLOSED-CAPTIONS"
 )
@@ -56,8 +58,8 @@ func (r Rendition) Validate() error {
 		return errspec.ParameterShouldBeNull("Rendition.Uri", r.Uri)
 	}
 
-	if r.RenditionType == RenditionTypeClosedCaptions && r.Forced {
-		return errspec.InvalidParameter("Rendition.Forced", strconv.FormatBool(r.Forced))
+	if r.RenditionType == RenditionTypeClosedCaptions && aws.BoolValue(r.Forced) {
+		return errspec.InvalidParameter("Rendition.Forced", strconv.FormatBool(aws.BoolValue(r.Forced)))
 	}
 
 	return nil

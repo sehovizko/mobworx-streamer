@@ -16,7 +16,7 @@ type MediaPlaylistProps struct {
 	EndList                   bool                        `json:"endlist"`
 	PlaylistType              MediaPlaylistType           `json:"playlistType"`
 	IsIFrame                  bool                        `json:"isIFrame"`
-	Segments                  []string                    `json:"segments"`
+	Segments                  []*Segment                  `json:"segments"`
 	Hash                      string                      `json:"hash"`
 	Lock                      bool                        `json:"lock"`
 	Map                       *MediaInitializationSection `json:"map"`

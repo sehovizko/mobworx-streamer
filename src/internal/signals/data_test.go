@@ -88,7 +88,7 @@ func TestNewDataMessageFromBuffer(t *testing.T) {
 		t.Run("Case/"+strconv.Itoa(i+1), func(t *testing.T) {
 			got, err := NewDataMessageFromBuffer([]byte(c.Value))
 			require.NoError(t, err)
-			assert.Equal(t, got, c.Expected)
+			assert.Equal(t, c.Expected, got)
 		})
 	}
 }
@@ -119,7 +119,7 @@ func TestNewDataMessage(t *testing.T) {
 		t.Run("Case/"+strconv.Itoa(i+1), func(t *testing.T) {
 			got, err := NewDataMessage(c.Value, c.Encoded)
 			require.NoError(t, err)
-			assert.Equal(t, got, c.Expected)
+			assert.Equal(t, c.Expected, got)
 		})
 	}
 }
@@ -172,7 +172,7 @@ func TestNewDataMessage_FromResources(t *testing.T) {
 			dsg, err := NewDataMessageFromBuffer(buf.Bytes())
 			require.NoError(t, err)
 
-			assert.Equal(t, dsg.Action, c.ExpectedAction)
+			assert.Equal(t, c.ExpectedAction, dsg.Action)
 		})
 	}
 }
