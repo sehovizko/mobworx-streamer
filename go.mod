@@ -3,10 +3,10 @@ module github.com/sehovizko/mobworx-streamer
 go 1.20
 
 require (
-	github.com/aws/aws-cdk-go/awscdk/v2 v2.65.0
+	github.com/aws/aws-cdk-go/awscdk/v2 v2.66.0
 	github.com/aws/aws-lambda-go v1.37.0
-	github.com/aws/aws-sdk-go v1.44.204
-	github.com/aws/constructs-go/constructs/v10 v10.1.255
+	github.com/aws/aws-sdk-go v1.44.207
+	github.com/aws/constructs-go/constructs/v10 v10.1.257
 	github.com/aws/jsii-runtime-go v1.75.0
 	github.com/google/uuid v1.3.0
 	github.com/redis/go-redis/v9 v9.0.2
@@ -15,9 +15,9 @@ require (
 
 require (
 	github.com/Masterminds/semver/v3 v3.2.0 // indirect
-	github.com/cdklabs/awscdk-asset-awscli-go/awscliv1/v2 v2.2.66 // indirect
+	github.com/cdklabs/awscdk-asset-awscli-go/awscliv1/v2 v2.2.69 // indirect
 	github.com/cdklabs/awscdk-asset-kubectl-go/kubectlv20/v2 v2.1.1 // indirect
-	github.com/cdklabs/awscdk-asset-node-proxy-agent-go/nodeproxyagentv5/v2 v2.0.55 // indirect
+	github.com/cdklabs/awscdk-asset-node-proxy-agent-go/nodeproxyagentv5/v2 v2.0.58 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
